@@ -9,7 +9,7 @@ from django.contrib.auth.models import User
 class ReportHOS(models.Model):
     """Model representing a HOS entry."""
     date_form_saved = models.DateTimeField(auto_now_add=True)
-    submitted_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    submitted_by = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL)
     date_reporting = models.DateField(("Date"), default=datetime.now())
     hospital = models.ForeignKey('Hospital', on_delete=models.SET_NULL, null=True)
     total_hospitalized = models.IntegerField(default=0, help_text='Število vseh hospitaliziranih COVID')
@@ -31,4 +31,3 @@ class Hospital(models.Model):
     def __str__(self):
         """Return better info to admin panel"""
         return self.short_name
-
