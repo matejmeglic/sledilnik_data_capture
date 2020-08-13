@@ -1,9 +1,13 @@
-"""Forms"""
+from django import forms
 from django.forms import ModelForm
 from HOS.models import ReportHOS
 
+from .models import Hospital
+
+
 class ReportHOSForm(ModelForm):
-    """HOS input form - ReportHOS model"""
+    hospital = forms.ModelChoiceField(queryset=Hospital.objects.filter(is_active=True))
+
     class Meta:
         model = ReportHOS
-        fields = 'date_reporting', 'hospital', 'total_hospitalized', 'total_hospitalized_ICU', 'total_released', 'total_deaths', 'deaths_info', 'remark',   
+        exclude = ('date_form_saved', 'submitted_by')
