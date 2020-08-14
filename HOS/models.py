@@ -22,10 +22,17 @@ class ReportHOS(models.Model):
     submitted_by = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL)
     date_reporting = models.DateField(("Date"), default=django.utils.timezone.now, help_text="LLLL-MM-DD")
     hospital = models.ForeignKey(Hospital, on_delete=models.SET_NULL, null=True)
+<<<<<<< HEAD
     total_hospitalized = models.PositiveIntegerField('Število vseh hospitaliziranih COVID', null=True, blank=True)
     total_hospitalized_ICU = models.PositiveIntegerField('Število hospitaliziranih COVID na intenzivni negi', null=True, blank=True)
     total_released = models.PositiveIntegerField('Število odpuščenih COVID', null=True, blank=True)
     total_deaths = models.PositiveIntegerField('Število smrtnih primerov s COVID', null=True, blank=True)
+=======
+    total_hospitalized = models.PositiveIntegerField(null=True, blank=True, help_text='Število vseh hospitaliziranih COVID')
+    total_hospitalized_ICU = models.PositiveIntegerField(null=True, blank=True, help_text='Število hospitaliziranih COVID na intenzivni negi')
+    total_released = models.PositiveIntegerField('Število odpuščenih COVID', null=True, blank=True)
+    total_deaths = models.PositiveIntegerField(null=True, blank=True, help_text='Število smrtnih primerov s COVID')
+>>>>>>> 53ff0b61ab45b4d824041869d3a70fc388e32b20
     deaths_info = models.CharField('Informacije o smrti', max_length=100, help_text='Spol M/Ž in starost umrlih, npr. M70 Ž85', blank=True, null=True)
     remark = models.TextField('Opombe', blank=True, null=True)
 

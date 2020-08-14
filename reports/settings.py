@@ -46,6 +46,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+<<<<<<< HEAD
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -53,6 +54,15 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+=======
+    'django.middleware.security.SecurityMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+>>>>>>> 53ff0b61ab45b4d824041869d3a70fc388e32b20
 ]
 
 ROOT_URLCONF = "reports.urls"
@@ -103,9 +113,15 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/3.0/topics/i18n/
 
+<<<<<<< HEAD
 LANGUAGE_CODE = "sl"
 
 TIME_ZONE = "Europe/Ljubljana"
+=======
+LANGUAGE_CODE = 'sl'
+
+TIME_ZONE = 'Europe/Ljubljana'
+>>>>>>> 53ff0b61ab45b4d824041869d3a70fc388e32b20
 
 USE_I18N = True
 
@@ -120,6 +136,7 @@ USE_TZ = True
 STATIC_URL = "/static/"
 
 # Redirect to home URL after login (Default redirects to /accounts/profile/)
+<<<<<<< HEAD
 # LOGIN_REDIRECT_URL = '/dashboard/'
 
 #EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
@@ -143,4 +160,32 @@ LOGGING = {
         },
     },
     "loggers": {"management.commands": {"handlers": ["console"], "level": "INFO",}},
+=======
+#LOGIN_REDIRECT_URL = '/dashboard/'
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'simple': {
+            'format': '%(levelname)-8s %(message)s'
+        },
+    },
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple',
+        },
+    },
+    'loggers': {
+        'management.commands': {
+            'handlers': ['console'],
+            'level': 'INFO',
+        }
+    }
+>>>>>>> 53ff0b61ab45b4d824041869d3a70fc388e32b20
 }

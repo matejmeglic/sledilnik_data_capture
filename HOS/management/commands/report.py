@@ -1,4 +1,5 @@
 from django_docopt_command import DocOptCommand
+<<<<<<< HEAD
 from django.utils import timezone, dateformat
 from HOS.models import ReportHOS, Hospital
 
@@ -11,21 +12,42 @@ DOCS = """
 Usage:
     report list [--count=<n>]
     report hos_report
+=======
+
+from HOS.models import ReportHOS
+
+import logging
+logger = logging.getLogger('management.commands')
+
+
+DOCS = '''
+Usage:
+    report list [--count=<n>]
+>>>>>>> 53ff0b61ab45b4d824041869d3a70fc388e32b20
 
 Options:
     -h --help     Show this screen.
     --version     Show version.
+<<<<<<< HEAD
 """
+=======
+'''
+>>>>>>> 53ff0b61ab45b4d824041869d3a70fc388e32b20
 
 
 class Command(DocOptCommand):
     docs = DOCS
 
     def handle_docopt(self, args):
+<<<<<<< HEAD
         if args["list"]:
             list_reports(count=int(args["--count"]))
         if args["hos_report"]:
             hos_report()
+=======
+        if args['list']:
+            list_reports(count=int(args['--count']))
+>>>>>>> 53ff0b61ab45b4d824041869d3a70fc388e32b20
 
 
 def list_reports(count=None):
@@ -33,6 +55,7 @@ def list_reports(count=None):
     if count:
         queryset = queryset[:count]
     for report in queryset:
+<<<<<<< HEAD
         logger.info(
             "{} - {} - {}".format(
                 report.date_reporting, report.hospital.short_name, report.submitted_by
@@ -62,3 +85,6 @@ def hos_report(count=None):
     #         report.hospital.short_name,
     #         report.submitted_by,
     #     )
+=======
+        logger.info("{} - {} - {}".format(report.date_reporting, report.hospital.short_name, report.submitted_by))
+>>>>>>> 53ff0b61ab45b4d824041869d3a70fc388e32b20

@@ -2,4 +2,7 @@
 __pycache__
 
 db.sqlite3
+<<<<<<< HEAD
 .env
+=======
+>>>>>>> 53ff0b61ab45b4d824041869d3a70fc388e32b20
