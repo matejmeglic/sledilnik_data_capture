@@ -1,25 +1,22 @@
-"""Admin"""
-
 from django.contrib import admin
+from . import models
 
-# Register your models here.
-
-from .models import ReportHOS, Hospital
-
+@admin.register(models.Hospital)
 class HospitalAdmin(admin.ModelAdmin):
-    """Display Hospitals on Admin panel"""
     list_display = ('name', 'short_name', 'is_active',)
+    list_filter = ('is_active',)
     ordering = ('-is_active', 'name')
 
+
+@admin.register(models.ReportHOS)
 class ReportHOSAdmin(admin.ModelAdmin):
-    """Display Hospitals on Admin panel"""
-    list_display = ('id', 'submitted_by', 'date_reporting', 'hospital', 'total_hospitalized',
-                    'total_hospitalized_ICU', 'total_released', 'total_deaths')
+    list_display_links = ('date_reporting',)
+    list_display = ('date_reporting', 'hospital', 'total_hospitalized', 'total_hospitalized_ICU', 'total_released', 'total_deaths', 'submitted_by')
     ordering = ('-date_reporting', 'hospital')
-    exclude = ['submitted_by',]
+    exclude = ('submitted_by',)
+    list_filter = ("hospital",)
+    date_hierarchy = "date_reporting"
+
     def save_model(self, request, obj, form, change):
         obj.submitted_by = request.user
         super().save_model(request, obj, form, change)
-
-admin.site.register(Hospital, HospitalAdmin)
-admin.site.register(ReportHOS, ReportHOSAdmin)

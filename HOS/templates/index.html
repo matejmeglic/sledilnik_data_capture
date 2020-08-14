@@ -1,24 +1,18 @@
-{% extends "base_generic.html" %}
+{% extends "base_generic.html" %} {% block content %}
 
-<!-- Add additional CSS in static file --> 
-{% load static %} 
-<link rel="stylesheet" href="{% static 'css/styles.css' %}">
+<br />
+<br />
+<h1>COVID vpis podatkov</h1>
 
+{% if user.is_authenticated %}
 
+<p>Dobrodošli {{ user.get_full_name }}.</p>
+<a href="{% url 'HOS:form' %}">HOS obrazec</a>
+<a href="{% url 'logout' %}?next={{request.path}}">Logout</a>
 
-{% block content %}
-  <br />
-  <br />
-  <h1>COVID vpis podatkov</h1>
-  {% if user.is_authenticated %}
-  <p>Dobrodošli {{ user.get_full_name }}.</p>
-  <a href="{% url 'HOS_form'%}">HOS obrazec</a> 
-  <a href="{% url 'logout'%}?next={{request.path}}">Logout</a>
-  {% else %}
-  <p>Za vnos podatkov se prijavite.</p>
-  <a href="{% url 'login'%}?next={{request.path}}">Login</a>  
-  {% endif %} 
+{% else %}
 
+<p>Za vnos podatkov se prijavite.</p>
+<a href="{% url 'login' %}?next={{request.path}}">Login</a>
 
-
-{% endblock %}
+{% endif %} {% endblock %}
