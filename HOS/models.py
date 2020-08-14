@@ -4,42 +4,135 @@ import django.utils.timezone
 
 
 class Hospital(models.Model):
-    name = models.CharField(max_length=100, help_text='Polno ime COVID bolnišnice.')
-    short_name = models.CharField(max_length=30, help_text='Kratica COVID bolnišnice.')
-    is_active = models.BooleanField(help_text='Ali je bolnišnica trenutno aktivna?', default=False)
+    name = models.CharField("Polno ime COVID bolnišnice", max_length=100)
+    short_name = models.CharField("Kratica COVID bolnišnice", max_length=30)
+    is_active = models.BooleanField(
+        "Ali je bolnišnica trenutno aktivna?", default=False
+    )
 
     class Meta:
-        verbose_name = "Bolnica"
-        verbose_name_plural = "Bolnice"
-        ordering = ('-is_active', 'name')
+        verbose_name = "Bolnišnica"
+        verbose_name_plural = "Bolnišnice"
+        ordering = ("-is_active", "name")
 
     def __str__(self):
         return self.short_name
 
 
-class ReportHOS(models.Model):
-    date_form_saved = models.DateTimeField(auto_now_add=True)
-    submitted_by = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL)
-    date_reporting = models.DateField(("Date"), default=django.utils.timezone.now, help_text="LLLL-MM-DD")
-    hospital = models.ForeignKey(Hospital, on_delete=models.SET_NULL, null=True)
-<<<<<<< HEAD
-    total_hospitalized = models.PositiveIntegerField('Število vseh hospitaliziranih COVID', null=True, blank=True)
-    total_hospitalized_ICU = models.PositiveIntegerField('Število hospitaliziranih COVID na intenzivni negi', null=True, blank=True)
-    total_released = models.PositiveIntegerField('Število odpuščenih COVID', null=True, blank=True)
-    total_deaths = models.PositiveIntegerField('Število smrtnih primerov s COVID', null=True, blank=True)
-=======
-    total_hospitalized = models.PositiveIntegerField(null=True, blank=True, help_text='Število vseh hospitaliziranih COVID')
-    total_hospitalized_ICU = models.PositiveIntegerField(null=True, blank=True, help_text='Število hospitaliziranih COVID na intenzivni negi')
-    total_released = models.PositiveIntegerField('Število odpuščenih COVID', null=True, blank=True)
-    total_deaths = models.PositiveIntegerField(null=True, blank=True, help_text='Število smrtnih primerov s COVID')
->>>>>>> 53ff0b61ab45b4d824041869d3a70fc388e32b20
-    deaths_info = models.CharField('Informacije o smrti', max_length=100, help_text='Spol M/Ž in starost umrlih, npr. M70 Ž85', blank=True, null=True)
-    remark = models.TextField('Opombe', blank=True, null=True)
+class Report_type(models.Model):
+    name = models.CharField("Polno ime poročila", max_length=100)
+    short_name = models.CharField("Kratica poročila", max_length=8)
+    is_active = models.BooleanField("Ali je poročilo trenutno aktivno?", default=False)
+    recipients = models.TextField(
+        "Email adrema",
+        blank=True,
+        null=True,
+        help_text="Prejemnike poročila ločite z vejicami.",
+    )
 
     class Meta:
-        verbose_name = "Poročilo bolnice"
-        verbose_name_plural = "Poročila bolnic"
-        ordering = ('-date_reporting', 'hospital')
+        verbose_name = "Tip poročila"
+        verbose_name_plural = "Tip poročil"
+        ordering = ("short_name",)
+
+    def __str__(self):
+        return self.short_name
+
+
+class Email(models.Model):
+    timestamp = models.DateTimeField("Timestamp", auto_now_add=True)
+    date_report_sent = models.DateField(
+        ("Datum poslanega emaila"),
+        default=django.utils.timezone.now,
+        help_text="LLLL-MM-DD",
+    )
+    date_report_sent_for = models.DateField(
+        ("Datum poročanja"), default=django.utils.timezone.now, help_text="LLLL-MM-DD"
+    )
+    report_type = models.ForeignKey(
+        Report_type, null=True, blank=True, on_delete=models.SET_NULL
+    )
+    full_report_sent = models.BooleanField(
+        "Popolno poročilo (vse aktivne bolnice)", default=False
+    )
+    partial_report_sent = models.BooleanField(
+        "Delno poročilo (samo nekatere bolnice)", default=False
+    )
+    recipients = models.TextField("Email adrema", blank=True, null=True)
+    content = models.TextField("Vsebina", blank=True, null=True)
+
+    class Meta:
+        verbose_name = "Poslano sporočilo"
+        verbose_name_plural = "Poslana sporočila"
+        ordering = (
+            "date_report_sent",
+            "date_report_sent_for",
+            "report_type",
+            "full_report_sent",
+            "partial_report_sent",
+        )
+
+    def __str__(self):
+        return self.date_report_sent_for
+
+
+class Timeline(models.Model):
+    timestamp = models.DateTimeField("Zadnja sprememba", auto_now_add=True)
+    report_type = models.ForeignKey(
+        Report_type, null=True, blank=True, on_delete=models.SET_NULL
+    )
+    send_partial_report = models.TimeField(auto_now=False, auto_now_add=False)
+
+    class Meta:
+        verbose_name = "Urnik pošiljanja"
+        verbose_name_plural = "Urnik pošiljanj"
+        ordering = ("report_type",)
+
+    def __str__(self):
+        return self.report_type.short_name
+
+
+class ReportHOS(models.Model):
+    def yesterday():
+        return django.utils.timezone.now() - django.utils.timezone.timedelta(days=1)
+
+    date_form_saved = models.DateTimeField(auto_now_add=True)
+    report_type = models.CharField(
+        "Tip poročila - short name", max_length=8, blank=True, null=True,
+    )
+    submitted_by = models.ForeignKey(
+        User, null=True, blank=True, on_delete=models.SET_NULL
+    )
+    date_reporting = models.DateField(
+        ("Datum, za katerega poročamo"), default=yesterday, help_text="DD.MM.LLLL",
+    )
+    hospital = models.ForeignKey(Hospital, on_delete=models.SET_NULL, null=True,)
+    total_hospitalized = models.PositiveIntegerField(
+        "Število vseh hospitaliziranih COVID", null=True, blank=True
+    )
+    total_hospitalized_ICU = models.PositiveIntegerField(
+        "Število hospitaliziranih COVID na intenzivni negi", null=True, blank=True
+    )
+    total_released = models.PositiveIntegerField(
+        "Število odpuščenih pacientov COVID", null=True, blank=True
+    )
+    total_deaths = models.PositiveIntegerField(
+        "Število smrtnih primerov s COVID", null=True, blank=True
+    )
+    deaths_info = models.CharField(
+        "Informacije o preminulih",
+        max_length=100,
+        help_text="Spol M/Ž in starost umrlih, npr. M70 Ž85",
+        blank=True,
+        null=True,
+    )
+    remark = models.TextField("Opombe", blank=True, null=True)
+
+    class Meta:
+        verbose_name = "Poročilo bolnišnic"
+        verbose_name_plural = "Poročila bolnišnic"
+        ordering = ("-date_reporting", "hospital")
 
     def __str__(self):
         return str(self.date_form_saved)
+

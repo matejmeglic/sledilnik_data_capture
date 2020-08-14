@@ -1,6 +1,4 @@
-{% extends "base_generic.html" %}
-
-{% block content %}
-  <p>Logged out!</p>  
-  <a href="{% url 'login'%}">Click here to login again.</a>
+{% extends "base_generic.html" %} {% block content %}
+<p>Odjava uspešna!</p>
+<a href="{% url 'login'%}">Kliknite na povezavo za ponovno prijavo v sistem.</a>
 {% endblock %}

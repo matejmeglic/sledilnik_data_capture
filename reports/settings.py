@@ -41,11 +41,11 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "gmailapi_backend",
     "HOS",
 ]
 
 MIDDLEWARE = [
-<<<<<<< HEAD
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -53,15 +53,6 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-=======
-    'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
->>>>>>> 53ff0b61ab45b4d824041869d3a70fc388e32b20
 ]
 
 ROOT_URLCONF = "reports.urls"
@@ -112,15 +103,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/3.0/topics/i18n/
 
-<<<<<<< HEAD
 LANGUAGE_CODE = "sl"
 
 TIME_ZONE = "Europe/Ljubljana"
-=======
-LANGUAGE_CODE = 'sl'
-
-TIME_ZONE = 'Europe/Ljubljana'
->>>>>>> 53ff0b61ab45b4d824041869d3a70fc388e32b20
 
 USE_I18N = True
 
@@ -135,16 +120,16 @@ USE_TZ = True
 STATIC_URL = "/static/"
 
 # Redirect to home URL after login (Default redirects to /accounts/profile/)
-<<<<<<< HEAD
 # LOGIN_REDIRECT_URL = '/dashboard/'
 
-#EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_USE_TLS = True
+# EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+SENDGRID_API_KEY = os.getenv("SENDGRID_API_KEY")
+
+EMAIL_HOST = "smtp.sendgrid.net"
+EMAIL_HOST_USER = "apikey"  # this is exactly the value 'apikey'
+EMAIL_HOST_PASSWORD = SENDGRID_API_KEY
 EMAIL_PORT = 587
-EMAIL_HOST_USER = 'info@sledilnik.com'
-EMAIL_HOST_PASSWORD = ‘your account’s password’
+EMAIL_USE_TLS = True
 
 
 LOGGING = {
@@ -159,32 +144,4 @@ LOGGING = {
         },
     },
     "loggers": {"management.commands": {"handlers": ["console"], "level": "INFO",}},
-=======
-#LOGIN_REDIRECT_URL = '/dashboard/'
-
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-
-
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'formatters': {
-        'simple': {
-            'format': '%(levelname)-8s %(message)s'
-        },
-    },
-    'handlers': {
-        'console': {
-            'level': 'DEBUG',
-            'class': 'logging.StreamHandler',
-            'formatter': 'simple',
-        },
-    },
-    'loggers': {
-        'management.commands': {
-            'handlers': ['console'],
-            'level': 'INFO',
-        }
-    }
->>>>>>> 53ff0b61ab45b4d824041869d3a70fc388e32b20
 }

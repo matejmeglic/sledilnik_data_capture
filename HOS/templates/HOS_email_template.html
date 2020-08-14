@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top" />
+    <style>
+      p {
+        font-family: Arial, Helvetica, sans-serif;
+      }
+      table {
+        border-collapse: collapse;
+        border-spacing: 10px;
+      }
+
+      table,
+      th,
+      td {
+        border: 1px solid #a3a3a3;
+      }
+
+      table th,
+      table td {
+        padding: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <p>
+      Avtomatično generirano Poročilo o stanju COVID pacientov v bolnišnicah na
+      dan {{ context.email_date }}.
+    </p>
+    <p>Bolnišnice poročajo podatke za prejšnji dan od 00.00-24.00 ure.</p>
+    <br />
+
+    <table>
+      <tr style="font-weight: 700;">
+        <td>Datum poročila</td>
+        <td>Bolnišnica</td>
+        <td>Število vseh hospitaliziranih COVID</td>
+        <td>Število hospitaliziranih COVID na intenzivni negi</td>
+        <td>Število odpuščenih pacientov COVID</td>
+        <td>Število smrtnih primerov s COVID</td>
+        <td>Informacije o preminulih</td>
+        <td>Opombe</td>
+      </tr>
+      <tr>
+        {% for report in context.table_content %}
+
+        <td>
+          {% if report.date_reporting == "None"%}Ni
+          podatka{%else%}{{report.date_reporting}}{%endif%}
+        </td>
+        <td>
+          {% if report.hospital == "None"%}Ni
+          podatka{%else%}{{report.hospital}}{%endif%}
+        </td>
+        <td>
+          {% if report.total_hospitalized == "None"%}Ni
+          podatka{%else%}{{report.total_hospitalized}}{%endif%}
+        </td>
+        <td>
+          {% if report.total_hospitalized_ICU == "None"%}Ni
+          podatka{%else%}{{report.total_hospitalized_ICU}}{%endif%}
+        </td>
+        <td>
+          {% if report.total_released == "None"%}Ni
+          podatka{%else%}{{report.total_released}}{%endif%}
+        </td>
+        <td>
+          {% if report.total_deaths == "None"%}Ni
+          podatka{%else%}{{report.total_deaths}}{%endif%}
+        </td>
+        <td>
+          {% if report.deaths_info == "None"%}Ni
+          podatka{%else%}{{report.deaths_info}}{%endif%}
+        </td>
+        <td>
+          {% if report.remark == "None"%}Ni
+          podatka{%else%}{{report.remark}}{%endif%}
+        </td>
+        <!--
+        <td>{{report.hospital}}</td>
+        <td>{{report.total_hospitalized}}</td>
+        <td>{{report.total_hospitalized_ICU}}</td>
+        <td>{{report.total_released}}</td>
+        <td>{{report.total_deaths}}</td>
+        <td>{{report.deaths_info}}</td>
+        <td>{{report.remark}}</td>
+      </tr>
+-->
+        {% endfor %}
+      </tr>
+    </table>
+
+    <p>
+      <a href="" alt="Vnosna forma"
+        >Povezava do obrazca za dnevno poročanje bolnišnic</a
+      >
+    </p>
+
+    <br />
+    <p>Hvala za vaš trud, ekipa Sledilnika.</p>
+    <br />
+    <br />
+    <p style="font-weight: 700;">
+      COVID-19 Sledilnik - COVID-19 Slovenia Tracking
+    </p>
+    <p style="margin: 0;">
+      <a href="https://covid-19.sledilnik.org/" alt="Sledilnik"
+        >covid-19.sledilnik.org</a
+      >
+    </p>
+    <p style="margin: 0;">
+      <a href="https://twitter.com/sledilnik" alt="Sledilnik TW"
+        >https://twitter.com/sledilnik</a
+      >
+    </p>
+    <p style="margin: 0;">
+      <a href="https://www.facebook.com/COVID19Sledilnik" alt="Sledilnik FB"
+        >https://www.facebook.com/COVID19Sledilnik</a
+      >
+    </p>
+  </body>
+</html>

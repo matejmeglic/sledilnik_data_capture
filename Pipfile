@@ -9,11 +9,9 @@ flake8 = "*"
 [packages]
 django = "*"
 django-docopt-command = "*"
-<<<<<<< HEAD
 flake8 = "*"
-python-dotenv = {extras = ["cli"], version = "*"}
-=======
->>>>>>> 53ff0b61ab45b4d824041869d3a70fc388e32b20
+python-dotenv = "*"
+sendgrid = "*"
 
 [requires]
 python_version = "3.8"

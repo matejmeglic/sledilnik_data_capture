@@ -10,4 +10,4 @@ class ReportHOSForm(ModelForm):
 
     class Meta:
         model = ReportHOS
-        exclude = ('date_form_saved', 'submitted_by')
+        exclude = ("date_form_saved", "report_type", "submitted_by")

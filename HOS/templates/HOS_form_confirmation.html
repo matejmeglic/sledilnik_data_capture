@@ -1,0 +1,79 @@
+{% extends "base_generic.html" %} {% block content %}
+
+<h1>HOS - Poročilo oddano</h1>
+
+{% if user.is_authenticated %}
+
+<br />
+<p class="confirmation_p">Zahvaljujemo se za vnos podatkov.</p>
+<p class="confirmation_p">V bazo COVID ste vnesli sledeče podatke:</p>
+<br />
+<div class="confirmation_table">
+<table>
+  <tr><td style="font-weight: 700;">
+    Datum poročila
+  </td><td>
+    {% if report.date_reporting == "None"%}Ni
+    podatka{%else%}{{report.date_reporting}}{%endif%}
+  </td></tr>
+  <tr><td style="font-weight: 700;">
+    Bolnišnica
+  </td>    <td>
+    {% if report.hospital == "None"%}Ni
+    podatka{%else%}{{report.hospital}}{%endif%}
+  </td>
+</tr>
+  <tr><td style="font-weight: 700;">
+    Število vseh hospitaliziranih COVID
+  </td>    <td>
+    {% if report.total_hospitalized == "None"%}Ni
+    podatka{%else%}{{report.total_hospitalized}}{%endif%}
+  </td>
+</tr>
+  <tr><td style="font-weight: 700;padding-right:20px;">
+    Število hospitaliziranih COVID na intenzivni negi
+  </td>    <td>
+    {% if report.total_hospitalized_ICU == "None"%}Ni
+    podatka{%else%}{{report.total_hospitalized_ICU}}{%endif%}
+  </td>
+</tr>
+  <tr><td style="font-weight: 700;">
+    Število odpuščenih pacientov COVID
+  </td>    <td>
+    {% if report.total_released == "None"%}Ni
+    podatka{%else%}{{report.total_released}}{%endif%}
+  </td>
+</tr>
+  <tr><td style="font-weight: 700;">
+    Število smrtnih primerov s COVID
+  </td>    <td>
+    {% if report.total_deaths == "None"%}Ni
+    podatka{%else%}{{report.total_deaths}}{%endif%}
+  </td>
+</tr>
+  <tr><td style="font-weight: 700;">
+    Informacije o preminulih
+  </td>    <td>
+    {% if report.deaths_info == "None"%}Ni
+    podatka{%else%}{{report.deaths_info}}{%endif%}
+  </td>
+</tr>
+  <tr><td style="font-weight: 700;">
+    Opombe
+  </td>    <td>
+    {% if report.remark == "None"%}Ni
+    podatka{%else%}{{report.remark}}{%endif%}
+  </tr>
+</tr>
+    
+</table>
+</div>
+<br />
+<p>Avtomatično generirano sporočilo bo poslano adremi, ko bodo vse aktivne COVID bolnišnice poročale stanje.</p>
+
+{% else %}
+<br /><br />
+<p>Za vnos podatkov se prijavite.</p>
+<a href="{% url 'login' %}?next={{request.path}}">Prijava</a>
+
+{% endif %} {% endblock %}
