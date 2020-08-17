@@ -4,6 +4,10 @@ from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from HOS.models import Hospital
+from django.shortcuts import render
+from django.urls import reverse, NoReverseMatch
+from django.utils.html import format_html
+from django.template.response import TemplateResponse
 
 
 class UserCreateForm(UserCreationForm):
@@ -59,38 +63,43 @@ class Report_typeAdmin(admin.ModelAdmin):
         "name",
         "recipients",
         "is_active",
+        "send_partial_report",
+        "timestamp",
     )
     list_filter = ("is_active",)
     ordering = ("-is_active", "short_name")
 
 
-@admin.register(models.Email)
-class EmailAdmin(admin.ModelAdmin):
+@admin.register(models.Email_log)
+class Email_logAdmin(admin.ModelAdmin):
     list_display = (
-        "date_report_sent",
         "date_report_sent_for",
+        "date_report_sent",
         "report_type",
         "full_report_sent",
         "partial_report_sent",
     )
     list_filter = ("report_type", "full_report_sent", "partial_report_sent")
     ordering = (
-        "date_report_sent",
         "date_report_sent_for",
+        "date_report_sent",
         "report_type",
-        "full_report_sent",
-        "partial_report_sent",
     )
+    readonly_fields = ("show_url",)
 
+    def show_url(self, instance):
+        response = format_html("""<a href={0}>{0}</a>""", "/email/hos/")
+        return response
 
-@admin.register(models.Timeline)
-class TimelineAdmin(admin.ModelAdmin):
-    list_display = (
-        "report_type",
-        "send_partial_report",
-        "timestamp",
-    )
-    ordering = ("-report_type",)
+    show_url.short_description = "URL"
+
+    # def neki(self, obj):
+    #     return render("HOS_email_template.html", {})
+
+    # def show_report(self, request):
+    #     return render(request, "HOS_email_template.html", {"context": self.content})
+
+    # show_report.short_description = "Report preview"
 
 
 @admin.register(models.ReportHOS)

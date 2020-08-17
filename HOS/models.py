@@ -22,24 +22,28 @@ class Hospital(models.Model):
 class Report_type(models.Model):
     name = models.CharField("Polno ime poročila", max_length=100)
     short_name = models.CharField("Kratica poročila", max_length=8)
-    is_active = models.BooleanField("Ali je poročilo trenutno aktivno?", default=False)
+    is_active = models.BooleanField(
+        "Ali je email poročilo trenutno aktivno?", default=False
+    )
     recipients = models.TextField(
         "Email adrema",
         blank=True,
         null=True,
-        help_text="Prejemnike poročila ločite z vejicami.",
+        help_text="Email vsakega prejemnika poročila vpišite v svojo vrsto, vpišite samo brez dodatnih znakov.",
     )
+    send_partial_report = models.TimeField(auto_now=False, auto_now_add=False)
+    timestamp = models.DateTimeField("Zadnja sprememba", auto_now_add=True)
 
     class Meta:
-        verbose_name = "Tip poročila"
-        verbose_name_plural = "Tip poročil"
+        verbose_name = "Email poročanje in adrema"
+        verbose_name_plural = "Email poročanja in adreme"
         ordering = ("short_name",)
 
     def __str__(self):
         return self.short_name
 
 
-class Email(models.Model):
+class Email_log(models.Model):
     timestamp = models.DateTimeField("Timestamp", auto_now_add=True)
     date_report_sent = models.DateField(
         ("Datum poslanega emaila"),
@@ -47,7 +51,7 @@ class Email(models.Model):
         help_text="LLLL-MM-DD",
     )
     date_report_sent_for = models.DateField(
-        ("Datum poročanja"), default=django.utils.timezone.now, help_text="LLLL-MM-DD"
+        ("Datum poročanja"), default=django.utils.timezone.now, help_text="LLLL-MM-DD",
     )
     report_type = models.ForeignKey(
         Report_type, null=True, blank=True, on_delete=models.SET_NULL
@@ -73,23 +77,7 @@ class Email(models.Model):
         )
 
     def __str__(self):
-        return self.date_report_sent_for
-
-
-class Timeline(models.Model):
-    timestamp = models.DateTimeField("Zadnja sprememba", auto_now_add=True)
-    report_type = models.ForeignKey(
-        Report_type, null=True, blank=True, on_delete=models.SET_NULL
-    )
-    send_partial_report = models.TimeField(auto_now=False, auto_now_add=False)
-
-    class Meta:
-        verbose_name = "Urnik pošiljanja"
-        verbose_name_plural = "Urnik pošiljanj"
-        ordering = ("report_type",)
-
-    def __str__(self):
-        return self.report_type.short_name
+        return str(self.date_report_sent_for)
 
 
 class ReportHOS(models.Model):

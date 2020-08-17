@@ -28,7 +28,7 @@
       Avtomatično generirano Poročilo o stanju COVID pacientov v bolnišnicah na
       dan {{ context.email_date }}.
     </p>
-    <p>Bolnišnice poročajo podatke za prejšnji dan od 00.00-24.00 ure.</p>
+    <p>Bolnišnice poročajo podatke za prejšnji dan od 00.00 do 23.59 ure.</p>
     <br />
 
     <table>
@@ -42,9 +42,9 @@
         <td>Informacije o preminulih</td>
         <td>Opombe</td>
       </tr>
-      <tr>
-        {% for report in context.table_content %}
 
+      {% for report in context.table_content %}
+      <tr>
         <td>
           {% if report.date_reporting == "None"%}Ni
           podatka{%else%}{{report.date_reporting}}{%endif%}
@@ -77,7 +77,8 @@
           {% if report.remark == "None"%}Ni
           podatka{%else%}{{report.remark}}{%endif%}
         </td>
-        <!--
+      </tr>
+      <!--
         <td>{{report.hospital}}</td>
         <td>{{report.total_hospitalized}}</td>
         <td>{{report.total_hospitalized_ICU}}</td>
@@ -87,18 +88,18 @@
         <td>{{report.remark}}</td>
       </tr>
 -->
-        {% endfor %}
-      </tr>
+      {% endfor %}
     </table>
 
     <p>
       <a href="" alt="Vnosna forma"
-        >Povezava do obrazca za dnevno poročanje bolnišnic</a
+        >Povezava do obrazca za dnevno poročanje bolnišnic.</a
       >
     </p>
 
     <br />
-    <p>Hvala za vaš trud, ekipa Sledilnika.</p>
+    <p>Hvala za vaš trud,</p>
+    <p>ekipa Sledilnika.</p>
     <br />
     <br />
     <p style="font-weight: 700;">
