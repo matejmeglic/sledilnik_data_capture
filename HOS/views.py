@@ -1,5 +1,6 @@
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
-from django.shortcuts import redirect
+from django.shortcuts import redirect, get_object_or_404
 
 from .forms import ReportHOSForm
 from .models import Report_type
@@ -37,38 +38,15 @@ import datetime
 import logging
 
 
-def hos_report(request):
-    queryset = ReportHOS.objects.all()
-    queryset_hospitals = Hospital.objects.filter(is_active=True)
-    yesterday = dateformat.format(
-        datetime.datetime.utcnow().date() - datetime.timedelta(days=1), "Y-m-d"
-    )
+@login_required
+def hos_report(request, report_id):
+    report = get_object_or_404(Email_log, id=report_id)
+    email_date = dateformat.format(report.date_report_sent_for, "Y-m-d")
+    context = {
+        "email_date": email_date,
+        "table_content": ReportHOS.objects.filter(date_reporting=email_date),
+        "to_emails": report.recipients,
+    }
 
-    list_hospitals = []
-    for hospital in queryset_hospitals:
-        list_hospitals.append(hospital.short_name)
-
-    for report in queryset:
-        if dateformat.format(report.date_reporting, "Y-m-d") == yesterday:
-            for hospital in queryset_hospitals:
-                if report.hospital == hospital:
-                    list_hospitals.remove(hospital.short_name)
-
-    if len(list_hospitals) == 0:
-
-        email_date = dateformat.format(
-            datetime.datetime.utcnow().date() - datetime.timedelta(days=1), "d.m.Y"
-        )
-        table_content = []
-
-        for report in queryset:
-            if dateformat.format(report.date_reporting, "Y-m-d") == yesterday:
-                table_content.append(report)
-
-        context = {
-            "email_date": email_date,
-            "table_content": table_content,
-        }
-
-        return render(request, "HOS_email_template.html", context)
+    return render(request, "HOS_email_template.html", {"context": context})
 

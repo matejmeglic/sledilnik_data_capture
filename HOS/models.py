@@ -19,28 +19,35 @@ class Hospital(models.Model):
         return self.short_name
 
 
+class EmailLogRecipient(models.Model):
+    email = models.EmailField()
+
+    class Meta:
+        verbose_name = "Email"
+        verbose_name_plural = "Emaili"
+        ordering = ("-email",)
+
+    def __str__(self):
+        return self.email
+
+
 class Report_type(models.Model):
     name = models.CharField("Polno ime poročila", max_length=100)
-    short_name = models.CharField("Kratica poročila", max_length=8)
+    slug = models.SlugField("Kratica poročila", unique=True)
     is_active = models.BooleanField(
         "Ali je email poročilo trenutno aktivno?", default=False
     )
-    recipients = models.TextField(
-        "Email adrema",
-        blank=True,
-        null=True,
-        help_text="Email vsakega prejemnika poročila vpišite v svojo vrsto, vpišite samo brez dodatnih znakov.",
-    )
+    recipients = models.ManyToManyField(EmailLogRecipient, verbose_name="Email naslovi")
     send_partial_report = models.TimeField(auto_now=False, auto_now_add=False)
     timestamp = models.DateTimeField("Zadnja sprememba", auto_now_add=True)
 
     class Meta:
         verbose_name = "Email poročanje in adrema"
         verbose_name_plural = "Email poročanja in adreme"
-        ordering = ("short_name",)
+        ordering = ("slug",)
 
     def __str__(self):
-        return self.short_name
+        return self.slug
 
 
 class Email_log(models.Model):
@@ -63,7 +70,6 @@ class Email_log(models.Model):
         "Delno poročilo (samo nekatere bolnice)", default=False
     )
     recipients = models.TextField("Email adrema", blank=True, null=True)
-    content = models.TextField("Vsebina", blank=True, null=True)
 
     class Meta:
         verbose_name = "Poslano sporočilo"
@@ -94,7 +100,9 @@ class ReportHOS(models.Model):
     date_reporting = models.DateField(
         ("Datum, za katerega poročamo"), default=yesterday, help_text="DD.MM.LLLL",
     )
-    hospital = models.ForeignKey(Hospital, on_delete=models.SET_NULL, null=True,)
+    hospital = models.ForeignKey(
+        Hospital, on_delete=models.SET_NULL, null=True, verbose_name="Bolnišnica"
+    )
     total_hospitalized = models.PositiveIntegerField(
         "Število vseh hospitaliziranih COVID", null=True, blank=True
     )

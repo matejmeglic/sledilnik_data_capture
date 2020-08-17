@@ -56,18 +56,23 @@ class HospitalAdmin(admin.ModelAdmin):
     ordering = ("-is_active", "name")
 
 
+@admin.register(models.EmailLogRecipient)
+class EmailLogRecipientAdmin(admin.ModelAdmin):
+    list_display = ("email",)
+
+
 @admin.register(models.Report_type)
 class Report_typeAdmin(admin.ModelAdmin):
     list_display = (
-        "short_name",
+        "slug",
         "name",
-        "recipients",
         "is_active",
         "send_partial_report",
         "timestamp",
     )
     list_filter = ("is_active",)
-    ordering = ("-is_active", "short_name")
+    ordering = ("-is_active", "slug")
+    filter_horizontal = ("recipients",)
 
 
 @admin.register(models.Email_log)
@@ -78,6 +83,7 @@ class Email_logAdmin(admin.ModelAdmin):
         "report_type",
         "full_report_sent",
         "partial_report_sent",
+        "show_url",
     )
     list_filter = ("report_type", "full_report_sent", "partial_report_sent")
     ordering = (
@@ -85,21 +91,15 @@ class Email_logAdmin(admin.ModelAdmin):
         "date_report_sent",
         "report_type",
     )
-    readonly_fields = ("show_url",)
+    readonly_fields = ("report_type",)
 
     def show_url(self, instance):
-        response = format_html("""<a href={0}>{0}</a>""", "/email/hos/")
+        response = format_html(
+            '<a href="{0}">{0}</a>'.format(reverse("HOS:report", args=[instance.id]))
+        )
         return response
 
-    show_url.short_description = "URL"
-
-    # def neki(self, obj):
-    #     return render("HOS_email_template.html", {})
-
-    # def show_report(self, request):
-    #     return render(request, "HOS_email_template.html", {"context": self.content})
-
-    # show_report.short_description = "Report preview"
+    show_url.short_description = "Email"
 
 
 @admin.register(models.ReportHOS)
@@ -122,8 +122,3 @@ class ReportHOSAdmin(admin.ModelAdmin):
     def save_model(self, request, obj, form, change):
         obj.submitted_by = request.user
         super().save_model(request, obj, form, change)
-
-    # def get_form(self, request, obj=None, **kwargs):
-    #     form = super(ReportHOSAdmin, self).get_form(request, obj, **kwargs)
-    #     form.hospital.queryset = Hospital.objects.filter(is_active=True)
-    #     return form

@@ -17,7 +17,7 @@ logger = logging.getLogger("management.commands")
 DOCS = """
 Usage:
     report list [--count=<n>]
-    report hos_report
+    report [--traceback] hos_report
     report email
 
 Options:
@@ -49,69 +49,63 @@ def list_reports(count=None):
 
 
 def hos_report():
-    queryset = ReportHOS.objects.all()
-    queryset_hospitals = Hospital.objects.filter(is_active=True)
     email_date = dateformat.format(
         datetime.datetime.utcnow().date() - datetime.timedelta(days=1), "Y-m-d"
-    )  # hardcoded
+    )  # hardcoded as yesterday
 
     # get active hospitals
     list_hospitals = []
-    for hospital in queryset_hospitals:
+    for hospital in Hospital.objects.filter(is_active=True):
         list_hospitals.append(hospital.short_name)
 
-    # get reports for reporting day [currently hardcoded to -1d]
-    for report in queryset:
+    # which hospitals already reported
+    for report in ReportHOS.objects.all():
         if dateformat.format(report.date_reporting, "Y-m-d") == email_date:
-            for hospital in queryset_hospitals:
+            for hospital in Hospital.objects.filter(is_active=True):
                 if report.hospital == hospital:
-                    list_hospitals.remove(hospital.short_name)
+                    if str(hospital.short_name) in list_hospitals:
+                        list_hospitals.remove(hospital.short_name)
 
     # if all active hospitals already reported, send email
     if len(list_hospitals) == 0:
-
-        table_content = []
-        report_type = ""
-        for report in queryset:
-            if dateformat.format(report.date_reporting, "Y-m-d") == email_date:
-                table_content.append(report)
-                report_type = report.report_type
-
+        email_date_formatted = dateformat.format(
+            datetime.datetime.utcnow().date() - datetime.timedelta(days=1), "d. m. Y"
+        )
         context = {
-            "email_date": email_date,
-            "table_content": table_content,
+            "email_date": email_date_formatted,
+            "table_content": ReportHOS.objects.filter(date_reporting=email_date),
         }
 
-        report_type_object = Report_type.objects.filter(short_name=report_type)
-        to_emails = report_type_object[0].recipients.splitlines()
+        report_object = Report_type.objects.get(slug="HOS")
+        email_list = report_object.recipients.all()
+        to_emails = []
+        for email in email_list:
+            to_emails.append(email.email)
         html_content = render_to_string("HOS_email_template.html", {"context": context})
-
-        # logger.info(render_to_string("HOS_email_template.html", {"context": context}))
 
         saved_report = Email_log()
         saved_report.date_report_sent = datetime.datetime.utcnow().date()
         saved_report.date_report_sent_for = email_date
-        saved_report.report_type = report_type_object[0]  # hackish
+        saved_report.report_type = report_object
         saved_report.full_report_sent = True
         saved_report.partial_report_sent = False
         saved_report.recipients = to_emails
-        saved_report.content = context
         saved_report.save()
 
-        # message = Mail(
-        #     from_email="info@sledilnik.org",
-        #     to_emails=to_emails,
-        #     subject="Poročilo o stanju COVID pacientov v bolnišnicah na dan {}.".format(
-        #         dateformat.format(datetime.datetime.utcnow().date(), "d-m-Y")
-        #     ),
-        #     html_content=html_content,
-        # )
-        # try:
-        #     sg = SendGridAPIClient(os.environ.get("SENDGRID_API_KEY"))
-        #     response = sg.send(message)
+        message = Mail(
+            from_email="info@sledilnik.org",
+            to_emails=to_emails,
+            subject="HOS: Poročilo o stanju COVID pacientov v bolnišnicah na dan {}.".format(
+                email_date_formatted
+            ),
+            html_content=html_content,
+        )
+        try:
+            sg = SendGridAPIClient(os.environ.get("SENDGRID_API_KEY"))
+            response = sg.send(message)
 
-        # except Exception as e:
-        #     print(e.message)
+        except Exception as e:
+            print(e)
         logger.info("EMAIL WOULD BE SENT NORMALLY.")
 
     # if not every active hospital reports is gathered,

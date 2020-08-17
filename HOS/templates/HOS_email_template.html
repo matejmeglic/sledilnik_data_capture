@@ -24,6 +24,9 @@
     </style>
   </head>
   <body>
+    <br />
+    {{context.to_emails}}
+    <br />
     <p>
       Avtomatično generirano Poročilo o stanju COVID pacientov v bolnišnicah na
       dan {{ context.email_date }}.
@@ -45,49 +48,15 @@
 
       {% for report in context.table_content %}
       <tr>
-        <td>
-          {% if report.date_reporting == "None"%}Ni
-          podatka{%else%}{{report.date_reporting}}{%endif%}
-        </td>
-        <td>
-          {% if report.hospital == "None"%}Ni
-          podatka{%else%}{{report.hospital}}{%endif%}
-        </td>
-        <td>
-          {% if report.total_hospitalized == "None"%}Ni
-          podatka{%else%}{{report.total_hospitalized}}{%endif%}
-        </td>
-        <td>
-          {% if report.total_hospitalized_ICU == "None"%}Ni
-          podatka{%else%}{{report.total_hospitalized_ICU}}{%endif%}
-        </td>
-        <td>
-          {% if report.total_released == "None"%}Ni
-          podatka{%else%}{{report.total_released}}{%endif%}
-        </td>
-        <td>
-          {% if report.total_deaths == "None"%}Ni
-          podatka{%else%}{{report.total_deaths}}{%endif%}
-        </td>
-        <td>
-          {% if report.deaths_info == "None"%}Ni
-          podatka{%else%}{{report.deaths_info}}{%endif%}
-        </td>
-        <td>
-          {% if report.remark == "None"%}Ni
-          podatka{%else%}{{report.remark}}{%endif%}
-        </td>
+        <td>{{report.date_reporting|default:"-"}}</td>
+        <td>{{report.hospital|default:"-"}}</td>
+        <td>{{report.total_hospitalized|default:"-"}}</td>
+        <td>{{report.total_hospitalized_ICU|default:"-"}}</td>
+        <td>{{report.total_released|default:"-"}}</td>
+        <td>{{report.total_deaths|default:"-"}}</td>
+        <td>{{report.deaths_info|default:"-"}}</td>
+        <td>{{report.remark|default:"-"}}</td>
       </tr>
-      <!--
-        <td>{{report.hospital}}</td>
-        <td>{{report.total_hospitalized}}</td>
-        <td>{{report.total_hospitalized_ICU}}</td>
-        <td>{{report.total_released}}</td>
-        <td>{{report.total_deaths}}</td>
-        <td>{{report.deaths_info}}</td>
-        <td>{{report.remark}}</td>
-      </tr>
--->
       {% endfor %}
     </table>
 
@@ -98,8 +67,7 @@
     </p>
 
     <br />
-    <p>Hvala za vaš trud,</p>
-    <p>ekipa Sledilnika.</p>
+    <p>Hvala za vaš trud, ekipa Sledilnika.</p>
     <br />
     <br />
     <p style="font-weight: 700;">
