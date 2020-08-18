@@ -29,7 +29,7 @@ SECRET_KEY = "!e2cz*+x-di5@r56vggpm8&zmmso&2xnoc$8##+^8y8endyqld"
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["https://sledilnik-data-capture.herokuapp.com/"]
+ALLOWED_HOSTS = ["sledilnik-data-capture.herokuapp.com"]
 
 
 # Application definition
