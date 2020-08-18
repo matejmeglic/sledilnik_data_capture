@@ -30,8 +30,8 @@ class Command(DocOptCommand):
     def handle_docopt(self, args):
         if args["list"]:
             list_reports(count=int(args["--count"]))
-        if args["hos_report"]:
-            hos_report()
+        if args["send_email_hos"]:
+            send_email_hos()
 
 
 def list_reports(count=None):
