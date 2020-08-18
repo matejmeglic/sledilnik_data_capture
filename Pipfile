@@ -12,6 +12,7 @@ django-docopt-command = "*"
 flake8 = "*"
 python-dotenv = "*"
 sendgrid = "*"
+gunicorn = "*"
 
 [requires]
 python_version = "3.8"
