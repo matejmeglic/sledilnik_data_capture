@@ -1,9 +1,11 @@
+from HOS.management.commands.report import send_email_hos
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render
-from django.shortcuts import redirect, get_object_or_404
+from django.shortcuts import render, get_object_or_404
+from django.utils import dateformat
 
+from .management.commands.report import send_email_hos
+from HOS.models import ReportHOS, Email_log
 from .forms import ReportHOSForm
-from .models import Report_type
 
 
 def index(request):
@@ -20,22 +22,15 @@ def hos_form(request):
             report.submitted_by = request.user
             report.report_type = "HOS"
             report.save()
+
+            send_email_hos()  # currently triggers email sending
+
             return render(request, "HOS_form_confirmation.html", {"report": report})
+
     else:
         form = ReportHOSForm()
 
     return render(request, "HOS_form.html", {"form": form})
-
-
-from django_docopt_command import DocOptCommand
-from django.utils import timezone, dateformat
-from HOS.models import ReportHOS, Report_type, Hospital, Email_log
-from django.core.mail import send_mail
-from django.template.loader import render_to_string
-from django.utils.html import strip_tags
-import datetime
-
-import logging
 
 
 @login_required

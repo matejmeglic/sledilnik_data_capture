@@ -1,9 +1,7 @@
 from django_docopt_command import DocOptCommand
-from django.utils import timezone, dateformat
+from django.utils import dateformat
 from HOS.models import ReportHOS, Report_type, Hospital, Email_log
-from django.core.mail import send_mail
 from django.template.loader import render_to_string
-from django.utils.html import strip_tags
 import datetime
 import os
 from sendgrid import SendGridAPIClient
@@ -17,7 +15,7 @@ logger = logging.getLogger("management.commands")
 DOCS = """
 Usage:
     report list [--count=<n>]
-    report [--traceback] hos_report
+    report [--traceback] send_email_hos
     report email
 
 Options:
@@ -48,7 +46,7 @@ def list_reports(count=None):
         )
 
 
-def hos_report():
+def send_email_hos():
     email_date = dateformat.format(
         datetime.datetime.utcnow().date() - datetime.timedelta(days=1), "Y-m-d"
     )  # hardcoded as yesterday
@@ -106,7 +104,7 @@ def hos_report():
 
         except Exception as e:
             print(e)
-        logger.info("EMAIL WOULD BE SENT NORMALLY.")
+        logger.info("EMAIL SENT NORMALLY.")
 
     # if not every active hospital reports is gathered,
     # but time for partial email send was already reached, send partial email
